@@ -3,12 +3,12 @@ AudioContext ac;
 WavePlayer wp;
 Gain g;
 Glide freqGlide;
-int freq = 200;
- 
+
 void setup()
 {
-  size(400,300);
-  
+  size(920,615);
+//keyboard is 405px w and 100px h
+//257.5
  ac = new AudioContext();
 
 freqGlide = new Glide(ac, 0.0, 0);
@@ -20,57 +20,128 @@ g.addInput(wp);
 ac.out.addInput(g);
  ac.start();
 }
-  
+
 void draw() {
- keyPressed(); { 
+ keyPressed(); {
+   fill(255);
     if(key=='a' || key=='A'){
       freqGlide.setValue(262);
-    } 
-     else if (key=='w' || key=='W'){
-      freqGlide.setValue(278);
-    } 
-     else if (key=='s' || key=='S'){
+      fill(204);
+    }
+    rect(310, 490, 30, 100);
+
+   fill(255);
+    if (key=='s' || key=='S'){
       freqGlide.setValue(294);
-    } 
-     else if (key=='e' || key=='E'){
-      freqGlide.setValue(311);
+      fill(204);
     }
-    else if (key=='e' || key=='E'){
-      freqGlide.setValue(311);
-    }
-     else if (key=='d' || key=='D'){
+    rect(340, 490, 30, 100);
+
+   fill(255);
+    if (key=='d' || key=='D'){
       freqGlide.setValue(330);
+      fill(204);
     }
-    else if (key=='f' || key=='F'){
+    rect(370, 490, 30, 100);
+
+   fill(255);
+     if (key=='f' || key=='F'){
       freqGlide.setValue(349);
+      fill(204);
     }
-    else if (key=='t' || key=='T'){
-      freqGlide.setValue(370);
-    }
-    else if (key=='g' || key=='G'){
+    rect(400, 490, 30, 100);
+
+   fill(255);
+    if (key=='g' || key=='G'){
       freqGlide.setValue(392);
+      fill(204);
     }
-    else if (key=='y' || key=='Y'){
-      freqGlide.setValue(415);
-    }
-    else if (key=='h' || key=='H'){
+    rect(430, 490, 30, 100);
+
+   fill(255);
+     if (key=='h' || key=='H'){
       freqGlide.setValue(440);
-   }
-   else if (key=='u' || key=='U'){
-      freqGlide.setValue(466);
-   }  
-   else if (key=='j' || key=='J'){
+      fill(204);
+    }
+    rect(460, 490, 30, 100);
+
+   fill(255);
+    if (key=='j' || key=='J'){
       freqGlide.setValue(494);
-   }
-   else if (key=='k' || key=='K'){
+      fill(204);
+    }
+    rect(490, 490, 30, 100);
+
+  fill(255);
+   if (key=='k' || key=='K'){
       freqGlide.setValue(523);
+      fill(204);
    }
-   else if (key=='o' || key=='O'){
-      freqGlide.setValue(554);
-   }
-   else if (key=='l' || key=='L'){
+   rect(520, 490, 30, 100);
+
+  fill(255);
+   if (key=='l' || key=='L'){
       freqGlide.setValue(587);
+      fill(204);
    }
-} 
- 
+   rect(550, 490, 30, 100);
+
+  fill(255);
+   if (key==';' || key==':'){
+      freqGlide.setValue(659);
+      fill(204);
+   }
+   rect(580, 490, 30, 100);
+
+   fill(255);
+    if (key=='w' || key=='W'){
+      freqGlide.setValue(278);
+      fill(0);
+    }
+    rect(332, 490, 15, 60);
+
+   fill(255);
+    if (key=='e' || key=='E'){
+      freqGlide.setValue(311);
+      fill(0);
+    }
+    rect(362, 490, 15, 60);
+
+    fill(255);
+     if (key=='t' || key=='T'){
+      freqGlide.setValue(370);
+      fill(0);
+    }
+    rect(422, 490, 15, 60);
+
+    fill(255);
+    if (key=='y' || key=='Y'){
+      freqGlide.setValue(415);
+      fill(0);
+   }
+   rect(452, 490, 15, 60);
+
+  fill(255);
+   if (key=='u' || key=='U'){
+      freqGlide.setValue(466);
+      fill(0);
+   }
+   rect(482, 490, 15, 60);
+
+  fill(255);
+   if (key=='o' || key=='O'){
+      freqGlide.setValue(554);
+      fill(0);
+   }
+   rect(542, 490, 15, 60);
+
+ fill(255);
+   if (key=='p' || key=='P'){
+      freqGlide.setValue(622);
+      fill(0);
+   }
+   rect(572, 490, 15, 60);
+
+  }
+
 }
