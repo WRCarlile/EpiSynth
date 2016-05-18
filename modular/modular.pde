@@ -1,4 +1,5 @@
 import beads.*;
+
 AudioContext ac;
 WavePlayer wp;
 WavePlayer modulator;
@@ -7,7 +8,6 @@ Glide noteFrequency;
 Glide modulatorFrequency;
 Envelope gainEnvelope;
 OnePoleFilter filter1;
-
 boolean keyPress;
 
 void setup()
@@ -19,10 +19,11 @@ void setup()
   gainEnvelope = new Envelope(ac, 0.0);
   noteFrequency = new Glide(ac, 20, 10);
   modulatorFrequency = new Glide(ac, 20, 30);
+
   modulator = new WavePlayer(ac, modulatorFrequency, Buffer.SAW);
   Function frequencyModulation = new Function(modulator) {
    public float calculate() {
-   return (x[0] * 500.0) + mouseY;
+   return (x[0] * 200.0) + (mouseY);
    }
  };
 
@@ -35,7 +36,7 @@ void setup()
   g.addInput(filter1);
   ac.out.addInput(g);
   ac.start();
-
+  background(#1fa5b1);
 //KEYBOARD OUTLINE
   stroke(0);
   rect(310, 490, 30, 100);
@@ -77,8 +78,9 @@ void setup()
 boolean stop;
 
 void draw() {
- modulatorFrequency.setValue(mouseX);
+
  if (stop == false) {
+ modulatorFrequency.setValue((mouseX + 100));
  //stroke(0);
  //rect(355, 200, 200, 200);
   float value = random(10,40);
