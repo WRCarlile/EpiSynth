@@ -1,7 +1,9 @@
 import beads.*;
 
 AudioContext setUpPatch;
+AudioContext filterPatch;
 WavePlayer wp;
+WavePlayer modulator;
 WavePlayer filterModulator;
 Gain filterPatchGain;
 Gain g;
@@ -11,9 +13,11 @@ Glide filterModulatorFrequency;
 Envelope gainEnvelope;
 Envelope filterGainEnvelope;
 OnePoleFilter filter1;
-boolean keyPress;
 boolean pen;
 boolean patch1;
+boolean setUpPatchToggle;
+boolean filterPatchToggle;
+float volume = 0.2;
 
 
 
@@ -57,23 +61,20 @@ void makeCanvas() {
     rect(572, 490, 15, 60);
 }
 
-
 void setup() {
   size(920,615);
-  keyPress = false;
   //SETS UP FOR THE SYNTHESIZER
   setUpPatch = new AudioContext();
-  gainEnvelope = new Envelope(setUpPatch, 0.0);
+  // gainEnvelope = new Envelope(setUpPatch, 0.0);
   noteFrequency = new Glide(setUpPatch, 20, 10);
   WavePlayer wp = new WavePlayer(setUpPatch, noteFrequency, Buffer.SINE);
-  g = new Gain(setUpPatch, 1, gainEnvelope);
+  g = new Gain(setUpPatch, 1, volume);
   g.addInput(wp);
-  // g.addInput(filterPatchGain);
   setUpPatch.out.addInput(g);
 
   //FILTER PATCH OSC
 
-  filterGainEnvelope = new Envelope(setUpPatch, 0.0);
+  // filterGainEnvelope = new Envelope(setUpPatch, 0.0);
   filterModulatorFrequency = new Glide(setUpPatch, 20, 30);
   WavePlayer filterOsc1 = new WavePlayer(setUpPatch, noteFrequency, Buffer.SINE);
   filterModulator = new WavePlayer(setUpPatch, filterModulatorFrequency, Buffer.SAW);
@@ -83,16 +84,31 @@ void setup() {
     }
   };
   filter1 = new OnePoleFilter(setUpPatch, frequencyModulation);
-  filterPatchGain = new Gain(setUpPatch, 1, filterGainEnvelope);
+  filterPatchGain = new Gain(setUpPatch, 1, volume);
   filter1.addInput(filterOsc1);
   filterPatchGain.addInput(filter1);
   setUpPatch.out.addInput(filterPatchGain);
+
 
   setUpPatch.start();
   //SETS UP THE CANVAS WITH BACKGROUND AND KEYBOARD
   makeCanvas();
 }
 
+
+
+
+
+//   delayIn = new TapIn(ac, 2000);
+//
+//   filter1.addInput(wp);
+//   g.addInput(filter1);
+//   delayIn.addinput(g);
+//   delayOut = new TapOut(ac, delayIn, 500.0);
+//   delayGain = new Gain(ac, 1, 0.50);
+//   delayGain.addInput(delayOut);
+//   ac.out.addInput(delayGain);
+//   ac.out.addInput(g);
 
 
 void draw() {
@@ -113,21 +129,48 @@ void draw() {
 }
 
 void mousePressed() {
+  setUpPatchToggle();
+  filterPatchToggle();
   if (pen == false) {
-    filterGainEnvelope.addSegment(0.2, 5);
     pen = true;
   }else {
     pen = false;
-    filterGainEnvelope.addSegment(0.0, 50);
   }
 }
 
+//TURN ON AND OFF THE PSYCHEDELIC ELIPES TRIGGERED BY THE KEY '1'
+void patch1() {
+  if (patch1 == false){
+    patch1 = true;
+  } else {
+    patch1 = false;
+  }
+}
+
+//TURN ON AND OFF THE SETUP PATCH OSCILLATOR TRIGGERED BY THE MOUSEPRESSED
+void setUpPatchToggle() {
+
+  if (setUpPatchToggle == false){
+    volume = 0.2;
+    setUpPatchToggle = true;
+  } else {
+    setUpPatchToggle = false;
+    volume = 0;
+  }
+}
+//TURN ON AND OFF THE FILTER PATCH OSCILLATOR TRIGGERED BY THE MOUSEPRESSED
+void filterPatchToggle(){
+  if(filterPatchToggle == false) {
+    // filterGainEnvelope.addSegment(0.2, 5);
+    filterPatchToggle = true;
+  } else {
+    filterPatchToggle = false;
+  }
+}
 
 void keyPressed() {
-  keyPress = true;
-
   if (key=='1') {
-    patch1 = true;
+    patch1();
   }
 
   if(key == 'q' || key == 'Q') {
@@ -272,6 +315,17 @@ void keyPressed() {
 }
 
 void keyReleased() {
+  // if (filterPatchToggle == true) {
+  //   filterGainEnvelope.addSegment(0.0, 100);
+  // }else{
+  //   filterGainEnvelope.addSegment(0.0, 0.0);
+  // }
+  // if (setUpPatchToggle == false){
+  //   gainEnvelope.addSegment(0.0, 100);
+  // }else {
+  //   gainEnvelope.addSegment(0.0, 0.0);
+  // }
+  filterGainEnvelope.addSegment(0.0, 100);
   gainEnvelope.addSegment(0.0, 100);
-  // filterGainEnvelope.addSegment(0.0, 100);
+
 }
