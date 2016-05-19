@@ -1,4 +1,22 @@
-import beads.*;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import beads.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class modular extends PApplet {
+
+
 
 AudioContext ac;
 WavePlayer wp;
@@ -16,20 +34,20 @@ String notes[] = {"C","D","E","F","G","A","B","C","D","E","CsDf","DsEf","FsGf","
 boolean keyStates[];
 int keysPressed = 0;
 
-void setup()
+public void setup()
 {
-  size(920,615);
+  
   keyStates = new boolean[keysLowerCase.length];
   // keyPress = false;
   ac = new AudioContext();
 
-  gainEnvelope = new Envelope(ac, 0.0);
+  gainEnvelope = new Envelope(ac, 0.0f);
   noteFrequency = new Glide(ac, 20, 10);
   modulatorFrequency = new Glide(ac, 20, 30);
   modulator = new WavePlayer(ac, modulatorFrequency, Buffer.SAW);
   Function frequencyModulation = new Function(modulator) {
    public float calculate() {
-   return (x[0] * 500.0) + mouseY;
+   return (x[0] * 500.0f) + mouseY;
    }
  };
 
@@ -83,7 +101,7 @@ void setup()
 
 boolean stop;
 
-void draw() {
+public void draw() {
  modulatorFrequency.setValue(mouseX);
  if (stop == false) {
   float value = random(10,40);
@@ -91,11 +109,11 @@ void draw() {
   ellipse(mouseX,mouseY,value,value);
   }
  if (mousePressed && (mouseButton == RIGHT)) {
-  background(#317E4D);
+  background(0xff317E4D);
  }
 }
 
-void mousePressed(){
+public void mousePressed(){
   if (stop == false) {
     stop = true;
   }else {
@@ -103,7 +121,7 @@ void mousePressed(){
   }
 }
 
-void keyPressed() {
+public void keyPressed() {
   keysPressed=0;
   for(int i=0;i<keysLowerCase.length;i++)
   {
@@ -121,7 +139,7 @@ void keyPressed() {
   {
     if(keyStates[i])
     {
-      gainEnvelope.addSegment(0.2, 5);// over 5 ms rise to 0.2
+      gainEnvelope.addSegment(0.2f, 5);// over 5 ms rise to 0.2
       fill(255);
       noteFrequency.setValue(tones[i]);
       fill(random(255),random(255),random(255));
@@ -254,7 +272,7 @@ void keyPressed() {
 
 
 
- void keyReleased()
+ public void keyReleased()
  {
    keysPressed = 0;
    for(int i=0;i<keysLowerCase.length;i++)
@@ -274,7 +292,7 @@ void keyPressed() {
    {
      if(keyStates[i])
      {
-       gainEnvelope.addSegment(0.0, 100);
+       gainEnvelope.addSegment(0.0f, 100);
 
       //  out.addSignal(new SineWave(tones[i], amp, out.sampleRate()));
      }
@@ -294,3 +312,13 @@ void keyPressed() {
   // a,s,d,f,g,h,j,k,;,w,e,t,y,u,o,p
   // 262,294,330,349,392,440,494,523,587,659,278,311,370,415,466,554,622
   // C,D,E,F,G,A,B,C,D,E,CsDf,DsEf,FsGf,GsAf,AsBf,CsDf,DsEf
+  public void settings() {  size(920,615); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "modular" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
+}
