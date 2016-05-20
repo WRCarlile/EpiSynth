@@ -17,45 +17,57 @@ boolean pen;
 boolean patch1;
 boolean setUpPatchToggle;
 boolean filterPatchToggle;
+TapIn delayIn;
+TapOut delayOut;
+Gain delayGain;
+TapIn delayInR;
+TapOut delayOutR;
+Gain delayGainR;
+// WavePlayer ringMod;
+// Glide ringModFrequency;
+// WavePlayer carrier;
+// Glide carrierFrequency;
+// Gain ringModGain;
+
 
 void makeCanvas() {
-    background(#1fa5b1);
-    //KEYBOARD OUTLINE
-    //KEYBOARD is 405px w and 100px h
-    stroke(0);
-    rect(310, 490, 30, 100);
-    stroke(0);
-    rect(340, 490, 30, 100);
-    stroke(0);
-    rect(370, 490, 30, 100);
-    stroke(0);
-    rect(400, 490, 30, 100);
-    stroke(0);
-    rect(430, 490, 30, 100);
-    stroke(0);
-    rect(460, 490, 30, 100);
-    stroke(0);
-    rect(490, 490, 30, 100);
-    stroke(0);
-    rect(520, 490, 30, 100);
-    stroke(0);
-    rect(550, 490, 30, 100);
-    stroke(0);
-    rect(580, 490, 30, 100);
-    stroke(0);
-    rect(332, 490, 15, 60);
-    stroke(0);
-    rect(362, 490, 15, 60);
-    stroke(0);
-    rect(422, 490, 15, 60);
-    stroke(0);
-    rect(452, 490, 15, 60);
-    stroke(0);
-    rect(482, 490, 15, 60);
-    stroke(0);
-    rect(542, 490, 15, 60);
-    stroke(0);
-    rect(572, 490, 15, 60);
+  background(#1fa5b1);
+  //KEYBOARD OUTLINE
+  //KEYBOARD is 405px w and 100px h
+  stroke(0);
+  rect(310, 490, 30, 100);
+  stroke(0);
+  rect(340, 490, 30, 100);
+  stroke(0);
+  rect(370, 490, 30, 100);
+  stroke(0);
+  rect(400, 490, 30, 100);
+  stroke(0);
+  rect(430, 490, 30, 100);
+  stroke(0);
+  rect(460, 490, 30, 100);
+  stroke(0);
+  rect(490, 490, 30, 100);
+  stroke(0);
+  rect(520, 490, 30, 100);
+  stroke(0);
+  rect(550, 490, 30, 100);
+  stroke(0);
+  rect(580, 490, 30, 100);
+  stroke(0);
+  rect(332, 490, 15, 60);
+  stroke(0);
+  rect(362, 490, 15, 60);
+  stroke(0);
+  rect(422, 490, 15, 60);
+  stroke(0);
+  rect(452, 490, 15, 60);
+  stroke(0);
+  rect(482, 490, 15, 60);
+  stroke(0);
+  rect(542, 490, 15, 60);
+  stroke(0);
+  rect(572, 490, 15, 60);
 }
 
 void setup() {
@@ -70,7 +82,6 @@ void setup() {
   setUpPatch.out.addInput(g);
 
   //FILTER PATCH OSC
-
   filterGainEnvelope = new Envelope(setUpPatch, 0.0);
   filterModulatorFrequency = new Glide(setUpPatch, 20, 30);
   WavePlayer filterOsc1 = new WavePlayer(setUpPatch, noteFrequency, Buffer.SINE);
@@ -86,26 +97,34 @@ void setup() {
   filterPatchGain.addInput(filter1);
   setUpPatch.out.addInput(filterPatchGain);
 
+  //DELAY FOR FILTER OSCILLATOR
+  delayIn = new TapIn(setUpPatch, 5000);
+  delayIn.addInput(filterPatchGain);
+  delayOut = new TapOut(setUpPatch, delayIn, filterModulatorFrequency);
+  delayGain = new Gain(setUpPatch, 1, 0.30);
+  delayGain.addInput(delayOut);
+  delayIn.addInput(delayGain);
+  setUpPatch.out.addInput(delayGain);
+
+  // //RING MODULATOR
+  // ringModFrequency = new Glide(setUpPatch, 20, 30);
+  // ringMod = new WavePlayer(setUpPatch, ringModFrequency, Buffer.SINE);
+  // carrierFrequency = new Glide(setUpPatch, 20, 30);
+  // carrier = new WavePlayer(setUpPatch, carrierFrequency, Buffer.SINE);
+  // Function ringModulation = new Function(carrier, modulator) {
+  //   public float calculate() {
+  //     return x[0] * x[1];
+  //   }
+  // };
+  // ringModGain = new Gain(setUpPatch, 1, 0.2);
+  // ringModGain.addInput(ringModulation);
+  // setUpPatch.out.addInput(ringModGain);
 
   setUpPatch.start();
   //SETS UP THE CANVAS WITH BACKGROUND AND KEYBOARD
   makeCanvas();
 }
 
-
-
-
-
-//   delayIn = new TapIn(ac, 2000);
-//
-//   filter1.addInput(wp);
-//   g.addInput(filter1);
-//   delayIn.addinput(g);
-//   delayOut = new TapOut(ac, delayIn, 500.0);
-//   delayGain = new Gain(ac, 1, 0.50);
-//   delayGain.addInput(delayOut);
-//   ac.out.addInput(delayGain);
-//   ac.out.addInput(g);
 
 
 void draw() {
@@ -115,6 +134,8 @@ void draw() {
     rotate(mouseX);
     fill(random(255),random(255),random(255));
     ellipse(mouseX-100,value,mouseY,value);
+    carrierFrequency.setValue(mouseY);
+    ringModFrequency.setValue(mouseX);
   }
 
   if (pen == true) {
@@ -126,8 +147,6 @@ void draw() {
 }
 
 void mousePressed() {
-  setUpPatchToggle();
-  filterPatchToggle();
   if (pen == false) {
     pen = true;
   }else {
@@ -135,7 +154,7 @@ void mousePressed() {
   }
 }
 
-//TURN ON AND OFF THE PSYCHEDELIC ELIPES TRIGGERED BY THE KEY '1'
+//TURN ON AND OFF THE PSYCHEDELIC ELLIPSE TRIGGERED BY THE KEY '1'
 void patch1() {
   if (patch1 == false){
     patch1 = true;
@@ -144,33 +163,15 @@ void patch1() {
   }
 }
 
-//TURN ON AND OFF THE SETUP PATCH OSCILLATOR TRIGGERED BY THE MOUSEPRESSED
-void setUpPatchToggle() {
-  if (setUpPatchToggle == false){
-    setUpPatchToggle = true;
-  } else {
-    setUpPatchToggle = false;
-  }
-}
-//TURN ON AND OFF THE FILTER PATCH OSCILLATOR TRIGGERED BY THE MOUSEPRESSED
-void filterPatchToggle(){
-  if(filterPatchToggle == false) {
-    filterPatchToggle = true;
-  } else {
-    filterPatchToggle = false;
-  }
-}
-
 void keyPressed() {
-  System.out.println(pen);
   if (key=='1') {
     patch1();
   }
-
+//CLEAR THE SCREEN WITH A FRESH CANVAS
   if(key == 'q' || key == 'Q') {
     makeCanvas();
    }
-
+//KEYPRESS NOTES FOR THE KEYBOARD AND OSCILLATOR FREQUENCY
   fill(255);
   if(key=='a' || key=='A'){
     noteFrequency.setValue(262);
@@ -380,5 +381,4 @@ void keyPressed() {
 void keyReleased() {
     filterGainEnvelope.addSegment(0.0, 100);
     gainEnvelope.addSegment(0.0, 100);
-
 }
